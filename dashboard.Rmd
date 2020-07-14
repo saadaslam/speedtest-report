@@ -1,0 +1,97 @@
+---
+title: "Saad's Speed Test Report"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: rows
+    vertical_layout: fill
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(dplyr)
+library(here)
+library(purrr)
+library(sf)
+library(tmap)
+library(ggplot2)
+```
+
+```{r input-file}
+input <- readr::read_csv(
+  here("output-files", "test-results.csv"),
+  col_names = c(
+    "total_time",
+    "retrieval_time",
+    "url",
+    "lat",
+    "lng",
+    "name",
+    "country",
+    "cc",
+    "sponsor",
+    "id",
+    "host",
+    "url2",
+    "test",
+    "secs",
+    "size",
+    "bw",
+    "test_datetime",
+    "test_type"
+  )
+)
+
+bw_chart <- function(data) {
+  data %>% 
+    ggplot(aes(test_datetime, bw)) +
+    stat_summary(
+      geom = "ribbon",
+      alpha = 0.5,
+      fun.min = ~ mean(.) - 2 * sd(.),
+      fun.max = ~ mean(.) + 2 * sd(.)
+    ) +
+    stat_summary(
+      geom = "line",
+      size = 1,
+      fun = mean
+    )
+}
+```
+
+
+Row
+-----------------------------------------------------------------------
+
+### Download Speed
+
+```{r}
+input %>% 
+  filter(test_type == "download") %>% 
+  bw_chart()
+```
+
+### Upload Speed
+
+```{r}
+input %>% 
+  filter(test_type == "upload") %>% 
+  bw_chart()
+```
+
+Row
+-----------------------------------------------------------------------
+
+### Server Locations 
+
+```{r}
+input_sf <- input %>% 
+  count(host, lng, lat) %>% 
+  st_as_sf(coords = c("lng", "lat")) %>% 
+  st_set_crs(4326)
+
+tmap_mode("view")
+tmap_options(basemaps = "OpenStreetMap")
+tm_shape(input_sf) + 
+  tm_dots(size = "n", labels = "host")
+```
+
