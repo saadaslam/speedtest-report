@@ -1,5 +1,5 @@
 ---
-title: "Saad's Speed Test Report (Last Updated: `r as.character(Sys.time())`"
+title: "Saad's Speed Test Report (Last Updated: `r as.character(Sys.time())`)"
 output: 
   flexdashboard::flex_dashboard:
     orientation: rows
