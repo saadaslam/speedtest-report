@@ -1,9 +1,10 @@
 ---
-title: "Saad's Speed Test Report"
+title: "Saad's Speed Test Report (Last Updated: `r as.character(Sys.time())`"
 output: 
   flexdashboard::flex_dashboard:
     orientation: rows
     vertical_layout: fill
+    theme: "united"
 ---
 
 ```{r setup, include=FALSE}
@@ -94,4 +95,3 @@ tmap_options(basemaps = "OpenStreetMap")
 tm_shape(input_sf) + 
   tm_dots(size = "n", labels = "host")
 ```
-
