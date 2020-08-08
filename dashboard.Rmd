@@ -48,8 +48,8 @@ bw_chart <- function(data) {
     stat_summary(
       geom = "ribbon",
       alpha = 0.5,
-      fun.min = ~ mean(.) - 2 * sd(.),
-      fun.max = ~ mean(.) + 2 * sd(.)
+      fun.min = ~ mean(.) - 2 * sd(.) / sqrt(sum(!is.na(.))),
+      fun.max = ~ mean(.) + 2 * sd(.) / sqrt(sum(!is.na(.)))
     ) +
     stat_summary(
       geom = "line",
